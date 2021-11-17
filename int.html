@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+
+</body>
+<script>
+
+    function throttle(fun, delay) {
+        let last = sessionStorage.getItem('last') || 0
+        let deferTimer = sessionStorage.getItem('deferTimer') || 0
+        return function (args) {
+            let that = this
+            let _args = arguments
+            let now = +new Date()
+            if (last && now < last + delay) {
+                clearTimeout(deferTimer)
+                deferTimer = setTimeout(function () {
+                    last = now
+                    sessionStorage.setItem('last', last)
+                    fun.apply(that, _args)
+                }, delay)
+                sessionStorage.setItem('deferTimer', deferTimer)
+            } else {
+                last = now
+                sessionStorage.setItem('last', last)
+                fun.apply(that, _args)
+            }
+        }
+    }
+
+    let biubiu = function () {
+        console.log('biu biu biu', new Date())
+    }
+
+    setInterval(throttle(biubiu, 3000),100)
+
+</script>
+
+</html>
